@@ -181,7 +181,7 @@ const { register, handleSubmit } = useForm();
         <blockquote>Probably not. Bulk commands are planned for the main bot, and we're not sure how to fit them into the main site at the moment.</blockquote>
         Can you add [other feature]?
         <blockquote>Depends on the feature. Ping us in the support server and we'll let you know if it's feasible or not. If it's accessibility related, chances are good that we'll add it.</blockquote>
-        Can i contribute to this?
+        Can I contribute to this?
         <blockquote>Yeah sure! The code is open source on <a href='https://github.com/Spectralitree/pk-webs/'>github</a>. Be warned though that we're currently in the middle of cleaning it all up and adding comments to everything, so some sections are quite messy still.</blockquote>
       </BS.Card.Body>
       </BS.Card>
