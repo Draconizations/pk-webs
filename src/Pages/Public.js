@@ -4,7 +4,7 @@ import { FaStar } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import history from "../History.js";
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
-import Profile from '../Components/Public/Profile.js'
+import Profile from '../Components/Public/Profile.tsx'
 import MemberProfile from '../Pages/MemberProfile.js'
 
 export default function Public () {

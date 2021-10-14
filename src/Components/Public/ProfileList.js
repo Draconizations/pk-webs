@@ -8,10 +8,10 @@ import ProfilePages from '../../Pages/ProfilePages.js'
 import Loading from "../Loading.js";
 import API_URL from "../../Constants/constants.js";
 
-export default function Memberlist() {
+export default function ProfileList() {
 
     const { path } = useRouteMatch();
-    const { sysID } = useParams();
+    const {sysID} = useParams();
 
     const [isLoading, setIsLoading ] = useState(false);
     const [isError, setIsError ] = useState(false);
