@@ -11,9 +11,7 @@ import twemoji from 'twemoji';
 import defaultAvatar from '../../default_discord_avatar.png'
 import { FaLink } from "react-icons/fa";
 
-export default function MemberCard(props) {
-    const { sysID } = useParams();
-    const member = props.member;
+export default function MemberCard({member}) {
 
     const [ avatar, setAvatar ] = useState('')
     const [ displayName, setDisplayName ] = useState("");
@@ -71,7 +69,7 @@ export default function MemberCard(props) {
     }, [member.description, member.color, member.birthday, member.display_name, member.pronouns, member.avatar_url, member.proxy_tags, member.banner]);
 
     function copyLink() {
-        var link = `https://pk-webs.spectralitree.com/profile/${sysID}/${member.id}`
+        var link = `https://pk-webs.spectralitree.com/profile/m/${member.id}`
         var textField = document.createElement('textarea')
         textField.innerText = link
         document.body.appendChild(textField);
@@ -132,7 +130,7 @@ export default function MemberCard(props) {
             { !member.banner || !localStorage.getItem("bottombanners") ? "" : 
               <BS.Image rounded className="mb-2" style={{width: '100%', maxHeight: '15rem', objectFit: 'cover'}} src={banner}/>
             }
-            <BS.Row><BS.Col><Link to={`${sysID}/${member.id}`}><BS.Button variant="primary" className="float-right">View page</BS.Button></Link></BS.Col></BS.Row> </BS.Card.Body>
+            <BS.Row><BS.Col><Link to={`/profile/m/${member.id}`}><BS.Button variant="primary" className="float-right">View page</BS.Button></Link></BS.Col></BS.Row> </BS.Card.Body>
         )
     }
 
@@ -140,14 +138,14 @@ export default function MemberCard(props) {
        <LazyLoad offset={100}>
            <BS.Card.Header className="d-flex align-items-center justify-content-between">
            <div> <BS.OverlayTrigger placement="left" overlay={ 
-            <BS.Tooltip>
+            <BS.Tooltip id="link copy hover">
                 Copy link
             </BS.Tooltip>
         }><BS.Button variant="link" onClick={() => copyLink()}><FaLink style={{fontSize: '1.25rem'}}/></BS.Button></BS.OverlayTrigger>
            { localStorage.getItem('pagesonly') ? 
-        <Link to={`${sysID}/${member.id}`}><BS.Button variant="link"> <b>{member.name}</b> ({member.id})</BS.Button></Link>
+        <Link to={`/profile/m/${member.id}`}><BS.Button variant="link"> <b>{member.name}</b> ({member.id})</BS.Button></Link>
         : <BS.Accordion.Toggle  as={BS.Button} variant="link" eventKey={member.id} > <b>{member.name}</b> ({member.id})</BS.Accordion.Toggle>}</div>
-            { member.avatar_url ?   <Popup trigger={<BS.Image src={`${member.avatar_url}`} style={{width: 50, height: 50}} tabIndex="0" className="float-right" roundedCircle />} className="avatar" modal>
+            { member.avatar_url ?   <Popup trigger={<BS.Image src={`${member.avatar_url}`} style={{width: 50, height: 50}} tabIndex={0} className="float-right" roundedCircle />} className="avatar" modal>
                 {close => (
                   <div className="text-center w-100 m-0" onClick={() => close()}>
                   <div className="m-auto" style={{maxWidth: '640px'}}>
@@ -156,7 +154,7 @@ export default function MemberCard(props) {
                 </div>
                 )}
             </Popup> : 
-        <BS.Image src={defaultAvatar} style={{width: 50, height: 50}} tabIndex="0" className="float-right" roundedCircle />}
+        <BS.Image src={defaultAvatar} style={{width: 50, height: 50}} tabIndex={0} className="float-right" roundedCircle />}
         </BS.Card.Header>
         {localStorage.getItem("expandcards") ? renderCard() : <BS.Accordion.Collapse eventKey={member.id}>
         {renderCard()}

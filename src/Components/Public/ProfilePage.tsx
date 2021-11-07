@@ -87,17 +87,17 @@ export default function ProfilePage(props) {
        <> 
        { localStorage.getItem('colorbg') && member.color ? "" : <><div className="backdrop" style={{backgroundColor: `#${color}`}}/>
         { !localStorage.getItem('fullbg') ? <div className="backdrop-overlay"/> : "" }</> }
-        { member.banner && !localStorage.getItem("hidebanners") ? <div className="banner" style={{backgroundImage: `url(${banner})`}} alt=""/> : ""}
+        { member.banner && !localStorage.getItem("hidebanners") ? <div className="banner" style={{backgroundImage: `url(${banner})`}}/> : ""}
         <BS.Alert variant="primary" >You are currently <b>viewing</b> a member.</BS.Alert>
         <BS.Card className="mb-5">
         <BS.Card.Header className="d-flex align-items-center justify-content-between">
          <div> <BS.OverlayTrigger placement="left" overlay={ 
-            <BS.Tooltip>
+            <BS.Tooltip id="copy link">
                 Copy link
             </BS.Tooltip>
         }><BS.Button variant="link" onClick={() => copyLink()}><FaLink style={{fontSize: '1.25rem'}}/></BS.Button></BS.OverlayTrigger>
          <BS.Button variant="link" ><b>{member.name}</b> ({member.id})</BS.Button></div>
-            { member.avatar_url ?   <Popup trigger={<BS.Image src={`${member.avatar_url}`} style={{width: 50, height: 50}} tabIndex="0" className="float-right" roundedCircle />} className="avatar" modal>
+            { member.avatar_url ?   <Popup trigger={<BS.Image src={`${member.avatar_url}`} style={{width: 50, height: 50}} tabIndex={0} className="float-right" roundedCircle />} className="avatar" modal>
                 {close => (
                   <div className="text-center w-100 m-0" onClick={() => close()}>
                   <div className="m-auto" style={{maxWidth: '640px'}}>
@@ -106,7 +106,7 @@ export default function ProfilePage(props) {
                 </div>
                 )}
             </Popup> : 
-        <BS.Image src={defaultAvatar} style={{width: 50, height: 50}} tabIndex="0" className="float-right" roundedCircle />}
+        <BS.Image src={defaultAvatar} style={{width: 50, height: 50}} tabIndex={0} className="float-right" roundedCircle />}
         </BS.Card.Header>
                 <BS.Card.Body style={{ borderLeft: localStorage.getItem('colorbg') ? `5px solid #${color}` : ''}}>
             <BS.Row>
@@ -155,7 +155,7 @@ export default function ProfilePage(props) {
             { !member.banner || !localStorage.getItem("bottombanners") ? "" : 
               <BS.Image rounded className="mb-2" style={{width: '100%', maxHeight: '15rem', objectFit: 'cover'}} src={banner}/>
             }
-            { props.list ? <BS.Row><BS.Col><Link to={location.pathname.substring(0, location.pathname.lastIndexOf('/'))}><BS.Button variant="primary" className="float-right">Back</BS.Button></Link></BS.Col></BS.Row> : ""}
+            {<BS.Row><BS.Col><Link to={`/profile/${member.system}`}><BS.Button variant="primary" className="float-right">Back to system</BS.Button></Link></BS.Col></BS.Row>}
             </BS.Card.Body>
         </BS.Card>
         </>
