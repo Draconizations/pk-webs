@@ -50,6 +50,7 @@ function isValidTimezone(timezone: string) {
 
 export default class Sys {
     id?: string;
+    uuid?: string;
     name?: string;
     description?: string;
     tag?: string;
@@ -62,6 +63,7 @@ export default class Sys {
 
     constructor(data: any) {
         this.id = data.id;
+        this.uuid = data.uuid;
         this.name = data.name;
         this.description = data.description;
         this.tag = data.tag;
