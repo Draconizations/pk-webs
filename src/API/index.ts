@@ -6,7 +6,8 @@ export default class PKAPI {
 
     ROUTES = {
         GET_SYSTEM: (sid?: string) => sid ? `/systems/${sid}` : `/systems/@me`,
-        GET_MEMBER_LIST: (sid?: string) => sid ? `/systems/${sid}/members` : `/systems/@me/members`
+        GET_MEMBER_LIST: (sid?: string) => sid ? `/systems/${sid}/members` : `/systems/@me/members`,
+        GET_MEMBER: (mid: string) => `/members/${mid}`
     }
 
     baseUrl: string;
@@ -65,6 +66,28 @@ export default class PKAPI {
             throw new Error(error.message);
         }
         return members;
+    }
+
+    async getMember(options: {id: any}) {
+        if (!options.id) {
+            throw new Error("Must pass an id.")
+        }
+        var member: Member;
+        var res: AxiosResponse;
+        try {
+            if (options.id) {
+                res = await this.handle(this.ROUTES.GET_MEMBER(options.id), 'GET', {});
+                if (res.status === 200) member = new Member(res.data);
+                }
+                else if (res.status === 500) throw new Error("Internal server error.");
+                else {
+                    let errorObject: any = res.data
+                    if (typeof errorObject.message === "string") throw new Error(errorObject.message);
+                }
+        } catch (error) {
+            throw new Error(error.message);
+        }
+        return member;
     }
 
     async handle(url: string, method: Method, options: {token?: string, body?: object}) {
