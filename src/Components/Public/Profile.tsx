@@ -6,8 +6,8 @@ import twemoji from 'twemoji';
 import { FaAddressCard } from "react-icons/fa";
 import defaultAvatar from '../../default_discord_avatar.png'
 import Loading from "../Loading.js";
-import { API_V2_TEST_URL } from "../../Constants/constants.js";
-import ProfileList from "./ProfileList.js";
+import { API_V2_URL } from "../../Constants/constants.js";
+import ProfileList from "./ProfileList";
 import PKAPI from "../../API/index"
 import Sys from '../../API/system';
 import { toHTML } from '../../Functions/discord-parser.js';
@@ -25,7 +25,7 @@ export default function Profile () {
     id: "",
     name: null,
     banner: null,
-    description: toHTML("(no description)", {}, null, null), // this has to be set to html because of the discord parsing while rendering
+    description: toHTML("(no description)", {}, null, null), // this has to be set to html because of the twemoji parsing while rendering
     tag: null,
     avatar_url: null,
     tz: "UTC",
@@ -33,7 +33,7 @@ export default function Profile () {
   });
 
   // initialize the API
-  var api = new PKAPI(API_V2_TEST_URL);
+  var api = new PKAPI(API_V2_URL);
 
   // some state handling stuff
   const [ isLoading, setIsLoading ] = useState(true);
