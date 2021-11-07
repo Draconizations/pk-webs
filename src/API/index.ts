@@ -1,10 +1,12 @@
 import axios, { AxiosInstance, Method, AxiosResponse, AxiosRequestConfig } from 'axios';
 import Sys from './system';
+import Member from './member';
 
 export default class PKAPI {
 
     ROUTES = {
-        GET_SYSTEM: (sid?: string) => sid ? `/systems/${sid}` : `/systems/@me`
+        GET_SYSTEM: (sid?: string) => sid ? `/systems/${sid}` : `/systems/@me`,
+        GET_MEMBER_LIST: (sid?: string) => sid ? `/systems/${sid}/members` : `/systems/@me/members`
     }
 
     baseUrl: string;
@@ -14,10 +16,7 @@ export default class PKAPI {
         this.baseUrl = baseUrl || 'https://api.pluralkit.me';
 
         this.instance = axios.create({
-            baseURL: this.baseUrl + '/v2',
-            validateStatus: function (status) {
-                return status < 500;
-            }
+            baseURL: this.baseUrl + '/v2'
         })
     }
 
@@ -38,6 +37,34 @@ export default class PKAPI {
             throw new Error(error.message);
         }
         return system;
+    }
+
+    async getMemberList(options: { token?: string, id?: any}) {
+        if (!options.token && !options.id) {
+            throw new Error("Must pass a token or id.")
+        }
+        var members: Member[] = [];
+        var res: AxiosResponse;
+        try {
+            if (options.id) {
+                    res = await this.handle(this.ROUTES.GET_MEMBER_LIST(options.id), 'GET', {});
+                    if (res.status === 200) {
+                        let resObject: any = res.data;
+                        resObject.forEach(m => {
+                            let member = new Member(m);
+                            members.push(member);
+                        })
+                    }
+                    else if (res.status === 500) throw new Error("Internal server error.");
+                    else {
+                        let errorObject: any = res.data
+                        if (typeof errorObject.message === "string") throw new Error(errorObject.message);
+                    }
+            }
+        } catch (error) {
+            throw new Error(error.message);
+        }
+        return members;
     }
 
     async handle(url: string, method: Method, options: {token?: string, body?: object}) {
