@@ -34,8 +34,8 @@ export default class PKAPI {
                     else if (res.status === 404) throw new Error(`System with id ${options.id} not found.`);
                     else throw new Error(JSON.stringify(res.status) + ': ' + JSON.stringify(res.data));
             }
-        } finally {
-            
+        } catch (error) {
+            throw new Error(error.message);
         }
         return system;
     }
