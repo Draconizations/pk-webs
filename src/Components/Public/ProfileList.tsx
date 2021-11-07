@@ -6,16 +6,24 @@ import 'reactjs-popup/dist/index.css';
 import ProfileCard from './ProfileCard.js'
 import ProfilePages from '../../Pages/ProfilePages.js'
 import Loading from "../Loading.js";
-import API_URL from "../../Constants/constants.js";
+import Member from '../../API/member';
+import { API_V2_URL } from "../../Constants/constants.js";
+import PKAPI from "../../API/index"
 
 export default function ProfileList() {
 
     const { path } = useRouteMatch();
-    const {sysID} = useParams();
-
-    const [isLoading, setIsLoading ] = useState(false);
+    
+    // grab the system id from the url
+    type sysParams = {
+      sysID: string
+    }
+    const { sysID } = useParams<sysParams>();
+  
+    // a LOT of state handling stuff
+    const [isLoading, setIsLoading ] = useState(true);
     const [isError, setIsError ] = useState(false);
-    const [isForbidden, setIsForbidden ] = useState(false);
+    const [ errorMessage, setErrorMessage] = useState("");
 
     const [currentPage, setCurrentPage] = useState(1);
     const [membersPerPage, setMembersPerPage] = useState(25);
@@ -26,39 +34,28 @@ export default function ProfileList() {
     const [sortBy, setSortBy] = useState('name')
     const [sortOrder, setSortOrder] = useState('ascending')
 
+    // TODO: does this need to be an useState hook?
     const [value, setValue] = useState('');
 
-  const fetchMembers = useCallback( () => {
-    setIsLoading(true);
-    setIsError(false);
-    setMembersPerPage(localStorage.getItem("expandcards") ? 10 : 25);
-
-     fetch(`${API_URL}s/${sysID}/members`,{
-    method: 'GET',
-    }).then ( res => {
-      if (res.status === 403) {
-        throw new Error('Access denied!');
-      }
-      return res.json()
-    }
-    ).then (data => { 
-    setMembers(data)
-      setIsLoading(false);
-  })
-    .catch (error => {
-      if (error.message === 'Access denied!') {
-        setIsForbidden(true);
-      } else {
-        console.log(error);
-        setIsError(true);
-      }
-      setIsLoading(false);
-    })
-  }, [sysID])
+  var api = new PKAPI(API_V2_URL);
 
   useEffect(() => {
     fetchMembers();
-  }, [fetchMembers])
+  }, []);
+
+  async function fetchMembers() {
+    try {
+      var res: Member[] = await api.getMemberList({id: sysID});
+      setMembers(res);
+      setIsLoading(false);
+    }
+    catch (error) {
+      console.log(error);
+      setErrorMessage(error.message);
+      setIsError(true);
+      setIsLoading(false);
+    }
+  };
 
   const indexOfLastMember = currentPage * membersPerPage;
   const indexOfFirstMember = indexOfLastMember - membersPerPage;
@@ -138,7 +135,7 @@ export default function ProfileList() {
         <BS.InputGroup className="mb-3">
         <BS.Form.Control disabled placeholder='Page length:'/>
           <BS.Form.Control as="select" defaultValue={localStorage.getItem("expandcards") ? 10 : 25} onChange={e => {
-            setMembersPerPage(e.target.value);
+            setMembersPerPage(parseInt(e.target.value));
             setCurrentPage(1);
             }}>
             <option>10</option>
@@ -216,7 +213,7 @@ export default function ProfileList() {
         </BS.Pagination>
       </BS.Row>
       { isLoading ? <Loading /> : isError ? 
-      <BS.Alert variant="danger">Error fetching members.</BS.Alert> : isForbidden ? <BS.Alert variant="danger">Member list is private.</BS.Alert> :
+      <BS.Alert variant="danger">Error fetching members.</BS.Alert> :
       <>
         <BS.Accordion className="mb-3 mt-3 w-100" defaultActiveKey="0">
             {memberList}
