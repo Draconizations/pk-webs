@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import history from "../History.js";
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import Profile from '../Components/Public/Profile.tsx'
-import MemberProfile from '../Pages/MemberProfile.js'
+import MemberProfile from '../Pages/MemberProfile.tsx'
 
 export default function Public () {
     const { path, url } = useRouteMatch();
