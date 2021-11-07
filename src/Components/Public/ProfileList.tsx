@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Switch, Route, useParams, useRouteMatch } from 'react-router-dom';
 import  * as BS from 'react-bootstrap'
 import 'reactjs-popup/dist/index.css';
 
-import ProfileCard from './ProfileCard.js'
-import ProfilePages from '../../Pages/ProfilePages.js'
+import ProfileCard from './ProfileCard'
 import Loading from "../Loading.js";
 import Member from '../../API/member';
 import { API_V2_URL } from "../../Constants/constants.js";
@@ -213,7 +212,7 @@ export default function ProfileList() {
         </BS.Pagination>
       </BS.Row>
       { isLoading ? <Loading /> : isError ? 
-      <BS.Alert variant="danger">Error fetching members.</BS.Alert> :
+      <BS.Alert variant="danger">{errorMessage}</BS.Alert> :
       <>
         <BS.Accordion className="mb-3 mt-3 w-100" defaultActiveKey="0">
             {memberList}
@@ -234,10 +233,6 @@ export default function ProfileList() {
         </>
         }
         </>
-          </Route>
-            <Route path={`/profile/${sysID}/:memberID`}>
-              { isLoading ? <Loading/> :
-            <ProfilePages members={members}/>}
           </Route>
         </Switch>
     )
