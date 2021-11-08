@@ -86,9 +86,9 @@ export default function MemberCard({member}) {
             <BS.Card.Body style={{borderLeft: `5px solid #${color}` }}>
             <BS.Row>
                 <BS.Col className="mb-lg-3" xs={12} lg={3}><b>ID:</b> {member.id}</BS.Col>
-                { member.display_name ? <BS.Col className="mb-lg-3" xs={12} lg={3}><b>Display name:</b> {displayName}</BS.Col> : "" }
+                { member.display_name ? <BS.Col className="mb-lg-3" xs={12} lg={3}><b>Display name:</b> { localStorage.getItem("twemoji") ? <span dangerouslySetInnerHTML={{__html: twemoji.parse(displayName)}}></span> : <span dangerouslySetInnerHTML={{__html: displayName}}></span>}</BS.Col> : "" }
                 { member.birthday ? <BS.Col className="mb-lg-3" xs={12} lg={3}><b>Birthday:</b> {birthday}</BS.Col> : "" }
-                { member.pronouns ? <BS.Col className="mb-lg-3" xs={12} lg={3}><b>Pronouns:</b> <span dangerouslySetInnerHTML={{__html: pronouns}}></span></BS.Col> : "" }
+                { member.pronouns ?   <BS.Col className="mb-lg-3" xs={12} lg={3}><b>Pronouns:</b> { localStorage.getItem("twemoji") ? <span dangerouslySetInnerHTML={{__html: twemoji.parse(pronouns)}}></span> : <span dangerouslySetInnerHTML={{__html: pronouns}}></span>}</BS.Col> : "" }
                 { member.color ? <BS.Col className="mb-lg-3" xs={12} lg={3}><b>Color:</b> {color}</BS.Col> : "" }
                 { proxyView ? "" : <BS.Col className="mb-lg-3" xs={12} lg={3}><b>Proxy tags:</b> <BS.Button variant="light" size="sm" onClick={() => setProxyView(true)}>View</BS.Button></BS.Col> }
                 { proxyView || !member.banner ? "" : 
