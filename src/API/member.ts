@@ -22,6 +22,7 @@ export default class Member {
     created?: string;
     keep_proxy?: boolean
     system?: string;
+    proxy_tags?: Array<object>;
     privacy?: MemberPrivacy
 
     constructor(data: any) {
@@ -37,6 +38,7 @@ export default class Member {
         this.description = data.description;
         this.created = data.created;
         this.system = data.system;
+        this.proxy_tags = data.proxy_tags;
         this.keep_proxy = data.keep_proxy;
         if (data.privacy) {
             this.privacy = {
