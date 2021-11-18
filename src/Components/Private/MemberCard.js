@@ -438,7 +438,7 @@ export default function MemberCard(props) {
 
 		return (
 			 memberDeleted ? <BS.Card.Header className="d-flex align-items-center justify-content-between"><BS.Button variant="link" className="float-left"><FaTrashAlt className="mr-4"/>Member Deleted</BS.Button></BS.Card.Header> :
-			 <LazyLoad offset={100}>
+				<>
 					 <BS.Card.Header className="d-flex align-items-center justify-content-between">
 				<div> { member.visibility === 'public' ? <BS.OverlayTrigger placement="left" overlay={ 
 						<BS.Tooltip>
@@ -463,7 +463,7 @@ export default function MemberCard(props) {
 				{localStorage.getItem("expandcards") ? renderCard() : <BS.Accordion.Collapse eventKey={member.id}>
 						{renderCard()}
 				</BS.Accordion.Collapse>}
-				</LazyLoad>
+				</>
 				
 		)
 }
