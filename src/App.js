@@ -6,7 +6,7 @@ import './App.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "react-toggle/style.css"
 
-import Dash from './Pages/Dash.js'
+import Dash from './Pages/Dash.tsx'
 import history from "./History.js"
 import Footer from './Components/Footer.js'
 import Public from './Pages/Public.js'
@@ -42,7 +42,7 @@ export default function App() {
 					<BS.Container>
 						<Switch>
 						<Route path="/dash">
-							{ !localStorage.getItem('token') || isInvalid ? <Redirect to="/"/> : <Dash />
+							{ <Dash />
 							}
 							</Route>
 							<Route exact path="/">
