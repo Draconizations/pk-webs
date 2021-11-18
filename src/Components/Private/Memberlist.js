@@ -10,7 +10,7 @@ import MemberPages from '../../Pages/MemberPages.js'
 import Loading from "../Loading.js";
 import API_URL from "../../Constants/constants.js";
 
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaSearch } from "react-icons/fa";
 
 export default function Memberlist() {
 
@@ -186,6 +186,11 @@ export default function Memberlist() {
 			<Switch>
 				<Route exact path={path}>
 				<>
+				<BS.Card className="mb-4">
+				<BS.Card.Header className="d-flex align-items-center">
+					<BS.Button variant="link" className="float-left"><FaSearch className="mr-4"/>Member Search</BS.Button>
+				</BS.Card.Header>
+				<BS.Card.Body>
 				<BS.Row className="mb-lg-3 justfiy-content-md-center">
 				<BS.Col xs={12} lg={3}>
 				<BS.Form>
@@ -271,6 +276,8 @@ export default function Memberlist() {
 					<BS.Button type="primary" className="m-0" block onClick={() => fetchMembers()}>Refresh</BS.Button>
 				</BS.Col>
 				</BS.Row>
+				</BS.Card.Body>
+				</BS.Card>
 				<BS.Row className="justify-content-md-center">
 				<BS.Pagination className="ml-auto mr-auto">
 					{ currentPage === 1 ? <BS.Pagination.Prev disabled/> : <BS.Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} />}
