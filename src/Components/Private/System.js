@@ -87,7 +87,6 @@ export default function System() {
 
 	return (
 		<>
-		{ user.banner && !localStorage.getItem("hidebanners") ? <div className="banner" style={{backgroundImage: `url(${user.banner})`}} alt=""/> : ""}
 		<BS.Card className="mb-3 mt-3 w-100">
 			<BS.Card.Header className="d-flex align-items-center justify-content-between">
 				<BS.Card.Title className="float-left">
