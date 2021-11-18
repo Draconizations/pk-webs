@@ -8,6 +8,9 @@ import history from "../History.js";
 import { FaLockOpen, FaHome } from "react-icons/fa";
 
 import API_URL from "../Constants/constants.js";
+import { API_V2_URL } from "../Constants/constants.js";
+import PKAPI from "../API/index";
+import Sys from "../API/system";
 
 const Home = ({isInvalid, setIsInvalid, isLoading, setIsLoading, isSubmit, setIsSubmit, forceUpdate }) => {
 	const { register, handleSubmit } = useForm();
@@ -16,46 +19,30 @@ const Home = ({isInvalid, setIsInvalid, isLoading, setIsLoading, isSubmit, setIs
 
 	// submit login form, add the token to the localstorage
 	const onSubmit = (data) => {
-		localStorage.setItem("token", data.pkToken);
-		logIn();
+		logIn(data.pkToken);
 	};
 
-	function logIn() {
+	const api = new PKAPI();
 
+	async function logIn(token: string) {
 		// make sure the token is not set to invalid and add a funny little spinner to indicate loading
 		setIsInvalid(false);
 		setIsLoading(true);
-		
-		// then fetch the system data with the token stored in localstorage
-		fetch(`${API_URL}s/`, {
-			method: "GET",
-			headers: {
-				Authorization: localStorage.getItem("token"),
-			},
-		})
-		// put all the system data in localstorage
-			.then((res) => {
-				if (!res.ok)
-					throw new Error('HTTP Status ' + res.status);
-				return res.json();
-			})
-			.then((data) => {
-				localStorage.setItem("user", JSON.stringify(data));
-				setIsSubmit(true);
-				setIsLoading(false);
-				history.push("/dash");
-			})
-			// remove the token and user data from localstorage if there's an error, also set the token as invalid
-			.catch((error) => {
-				console.log(error);
-				setIsInvalid(true);
-				setErrorMessage(error.message);
-				if (error.message === "HTTP Status 401")
-					setErrorMessage("Your token is invalid.")
-				localStorage.removeItem("token");
-				localStorage.removeItem("user");
-				setIsLoading(false);
-			});
+
+		// fetch the system with the token
+		try { 
+			const res: Sys = await api.getSystem({token: token});
+			localStorage.setItem("token", token);
+			localStorage.setItem("user", JSON.stringify(res));
+			setIsSubmit(true);
+			setIsLoading(false);
+		} catch (error) {
+			console.log(error);
+			localStorage.removeItem("token");
+			setIsInvalid(true);
+			setErrorMessage(error.message);
+			setIsLoading(false);
+		}
 	}
 
 	// Logout function
@@ -70,35 +57,11 @@ const Home = ({isInvalid, setIsInvalid, isLoading, setIsLoading, isSubmit, setIs
 	// when the homepage loads, check if there's a token, if there is, check if it's still valid
 	// removing the dependency array causes a rerender loop, so just ignore ESlint here
 	useEffect(() => {
-		if (localStorage.getItem('token')) {
-			checkLogIn();
+		var token = localStorage.getItem('token');
+		if (token) {
+			logIn(token)
 		}
 	}, []);
-
-	// very similar to LogIn(), only difference is that it doesn't push the user afterwards
-	// TODO: useless double code that probably could be refactored somehow
-	function checkLogIn() {
-		setIsInvalid(false);
-		setIsLoading(true);
-		
-		 fetch(`${API_URL}s/`,{
-			 method: 'GET',
-			 headers: {
-				 'Authorization': localStorage.getItem("token")
-			 }}).then ( res => res.json()
-			 ).then (data => { 
-				 localStorage.setItem('user', JSON.stringify(data));
-				 setIsSubmit(true);
-				 setIsLoading(false);
-		 })
-			 .catch (error => { 
-				 console.log(error);
-				 setIsInvalid(true);
-				 localStorage.removeItem('token');
-				 localStorage.removeItem('user');
-				 setIsLoading(false);
-			 })
-		 };
 
 	return (
 		<>
@@ -133,7 +96,7 @@ const Home = ({isInvalid, setIsInvalid, isLoading, setIsLoading, isSubmit, setIs
 						localStorage.getItem("user") && localStorage.getItem("token") ? (
 							<>
 								<p>
-									You are logged in already, click here to continue to the dash.
+									You are logged in, click here to continue to the dash.
 								</p>
 								<BS.Button
 									variant="primary"

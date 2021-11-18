@@ -10,7 +10,7 @@ import Dash from './Pages/Dash.tsx'
 import history from "./History.js"
 import Footer from './Components/Footer.js'
 import Public from './Pages/Public.js'
-import Home from './Pages/Home.js'
+import Home from './Pages/Home.tsx'
 import Settings from './Pages/Settings.js'
 import Template from './Pages/Template.js'
 import Navbar from './Components/Navbar.js'
