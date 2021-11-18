@@ -3,6 +3,11 @@ import Sys from './system';
 import Member from './member';
 import Group from './group';
 
+
+type FieldError = {
+    message: string
+}
+
 export default class PKAPI {
 
     ROUTES = {
@@ -32,11 +37,7 @@ export default class PKAPI {
         try {
             res = await this.handle(this.ROUTES.GET_SYSTEM(options.id ? options.id : ""), 'GET', {token: !options.id ? options.token : ""});
             if (res.status === 200) system = new Sys(res.data);
-            else if (res.status === 500) throw new Error("Internal server error.");
-            else {
-                let errorObject: any = res.data
-                if (typeof errorObject.message === "string") throw new Error(errorObject.message);
-            }
+            else this.handleErrors(res);
         } catch (error) {
             throw new Error(error.message);
         }
@@ -58,11 +59,7 @@ export default class PKAPI {
                     members.push(member);
                 })
             }
-            else if (res.status === 500) throw new Error("Internal server error.");
-            else {
-                let errorObject: any = res.data
-                if (typeof errorObject.message === "string") throw new Error(errorObject.message);
-            }
+            else this.handleErrors(res);
         } catch (error) {
             throw new Error(error.message);
         }
@@ -78,11 +75,7 @@ export default class PKAPI {
         try {
             res = await this.handle(this.ROUTES.GET_MEMBER(options.id), 'GET', {});
             if (res.status === 200) member = new Member(res.data);
-            else if (res.status === 500) throw new Error("Internal server error.");
-            else {
-                let errorObject: any = res.data
-                if (typeof errorObject.message === "string") throw new Error(errorObject.message);
-            }
+            else this.handleErrors(res);
         } catch (error) {
             throw new Error(error.message);
         }
@@ -104,15 +97,32 @@ export default class PKAPI {
                         groups.push(group);
                     })
                 }
-                else if (res.status === 500) throw new Error("Internal server error.");
-                else {
-                    let errorObject: any = res.data
-                    if (typeof errorObject.message === "string") throw new Error(errorObject.message);
-                }
+                else this.handleErrors(res);
         } catch (error) {
             throw new Error(error.message);
         }
         return groups;
+    }
+
+    handleErrors(res: any) {
+        if (res.status === 500) throw new Error("500: Internal server error.");
+        else if (res.status === 400) throw new Error("400: Bad request.");
+        else if (res.status === 401) throw new Error("401: Your token is invalid.");
+        else {
+            let errorObject: any = res.data
+            if (errorObject.code) {
+                if (errorObject.code === 4001) {
+                    let fieldErrors: string;
+                    for (const [key, value] of Object.entries(errorObject.errors)) {
+                        let Value = value as FieldError;
+                        fieldErrors += `${key}: ${Value.message}` 
+                    }
+                    throw new Error("The following fields are invalid:" + fieldErrors);
+                } else {
+                    throw new Error(errorObject.message);
+                }
+            }
+        }
     }
 
     async handle(url: string, method: Method, options: {token?: string, body?: object}) {
