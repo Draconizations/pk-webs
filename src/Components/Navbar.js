@@ -35,7 +35,14 @@ const Navbar = ({ setIsSubmit, forceUpdate}) => {
             </BS.Navbar.Brand>
             <BS.NavDropdown id="menu" className="mr-auto" title="Menu">
             {/* for some reason just using react router's link elements doesn't work here, maybe look into that */}
+            { localStorage.getItem('token') ? 
+            <>
             <BS.NavDropdown.Item onClick={() => history.push('/dash')} >Dash</BS.NavDropdown.Item>
+            <BS.NavDropdown.Item onClick={() => history.push({pathname: '/dash', state: {tab: 'system'}})}>› System</BS.NavDropdown.Item>
+            <BS.NavDropdown.Item onClick={() => history.push({pathname: '/dash', state: {tab: 'members'}})}>› Members</BS.NavDropdown.Item>
+            <BS.NavDropdown.Item onClick={() => history.push({pathname: '/dash', state: {tab: 'groups'}})}>› Groups</BS.NavDropdown.Item>
+            <hr className="my-1"/>
+            </> : "" }
             <BS.NavDropdown.Item onClick={() => history.push('/settings')} >Settings</BS.NavDropdown.Item>
             <BS.NavDropdown.Item onClick={() => history.push('/template')}>Templates</BS.NavDropdown.Item>
             <BS.NavDropdown.Item onClick={() => history.push('/profile')}>Public profile</BS.NavDropdown.Item>
