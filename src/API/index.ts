@@ -30,11 +30,12 @@ export default class PKAPI {
         var system: Sys;
         var res: AxiosResponse;
         try {
-            if (options.id) {
-                    res = await this.handle(this.ROUTES.GET_SYSTEM(options.id), 'GET', {});
-                    if (res.status === 200) system = new Sys(res.data);
-                    else if (res.status === 404) throw new Error(`System with id ${options.id} not found.`);
-                    else throw new Error(JSON.stringify(res.status) + ': ' + JSON.stringify(res.data));
+            res = await this.handle(this.ROUTES.GET_SYSTEM(options.id ? options.id : ""), 'GET', {token: !options.id ? options.token : ""});
+            if (res.status === 200) system = new Sys(res.data);
+            else if (res.status === 500) throw new Error("Internal server error.");
+            else {
+                let errorObject: any = res.data
+                if (typeof errorObject.message === "string") throw new Error(errorObject.message);
             }
         } catch (error) {
             throw new Error(error.message);
@@ -49,20 +50,18 @@ export default class PKAPI {
         var members: Member[] = [];
         var res: AxiosResponse;
         try {
-            if (options.id) {
-                    res = await this.handle(this.ROUTES.GET_MEMBER_LIST(options.id), 'GET', {});
-                    if (res.status === 200) {
-                        let resObject: any = res.data;
-                        resObject.forEach(m => {
-                            let member = new Member(m);
-                            members.push(member);
-                        })
-                    }
-                    else if (res.status === 500) throw new Error("Internal server error.");
-                    else {
-                        let errorObject: any = res.data
-                        if (typeof errorObject.message === "string") throw new Error(errorObject.message);
-                    }
+            res = await this.handle(this.ROUTES.GET_MEMBER_LIST(options.id ? options.id : ""), 'GET', {token: !options.id ? options.token : ""});
+            if (res.status === 200) {
+                let resObject: any = res.data;
+                resObject.forEach(m => {
+                    let member = new Member(m);
+                    members.push(member);
+                })
+            }
+            else if (res.status === 500) throw new Error("Internal server error.");
+            else {
+                let errorObject: any = res.data
+                if (typeof errorObject.message === "string") throw new Error(errorObject.message);
             }
         } catch (error) {
             throw new Error(error.message);
@@ -77,15 +76,13 @@ export default class PKAPI {
         var member: Member;
         var res: AxiosResponse;
         try {
-            if (options.id) {
-                res = await this.handle(this.ROUTES.GET_MEMBER(options.id), 'GET', {});
-                if (res.status === 200) member = new Member(res.data);
-                }
-                else if (res.status === 500) throw new Error("Internal server error.");
-                else {
-                    let errorObject: any = res.data
-                    if (typeof errorObject.message === "string") throw new Error(errorObject.message);
-                }
+            res = await this.handle(this.ROUTES.GET_MEMBER(options.id), 'GET', {});
+            if (res.status === 200) member = new Member(res.data);
+            else if (res.status === 500) throw new Error("Internal server error.");
+            else {
+                let errorObject: any = res.data
+                if (typeof errorObject.message === "string") throw new Error(errorObject.message);
+            }
         } catch (error) {
             throw new Error(error.message);
         }
