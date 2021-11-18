@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import  * as BS from 'react-bootstrap'
 import moment from 'moment';
 import Popup from 'reactjs-popup';
