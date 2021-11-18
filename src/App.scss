@@ -313,6 +313,7 @@ textarea {
   left: 0;
   width: 100%;
   height: 30vh;
+  z-index: -1;
   background-size: cover;
   background-position: center;
   box-shadow: inset 0 -3px 10px -10px #000000, inset 0 10px 10px -10px #000000;
@@ -326,4 +327,40 @@ textarea {
 
 .banner-content {
   max-height: 650px !important;
+}
+
+.nav-tabs > .nav-link {
+  background-color: $gray-200 !important;
+  font-weight: bold;
+}
+
+.dark-mode .nav-tabs > .nav-link {
+  background-color: $gray-900 !important;
+  border: 1px solid #191c1f !important;
+  color: #007bff !important;
+}
+
+.dark-mode .nav-tabs > .nav-link.active {
+  color: white !important;
+}
+
+.dark-mode .nav-tabs {
+  border-bottom: 1px solid #191c1f !important;
+}
+
+.nav-tabs > a
+{
+  margin-right: 0.75rem !important;
+  padding-left: 3rem !important; 
+  padding-right: 3rem !important;
+}
+
+.tab-content {
+  background-color: white;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.dark-mode .tab-content {
+  background-color: $gray-800;
 }
