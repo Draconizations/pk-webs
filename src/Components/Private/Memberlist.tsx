@@ -8,67 +8,58 @@ import { useForm } from "react-hook-form";
 import MemberCard from './MemberCard.js'
 import MemberPages from '../../Pages/MemberPages.js'
 import Loading from "../Loading.js";
-import API_URL from "../../Constants/constants.js";
+import PKAPI from '../../API/index';
+import Member from '../../API/member';
 
 import { FaPlus, FaSearch } from "react-icons/fa";
 
 export default function Memberlist() {
 
 	const { path } = useRouteMatch();
-	
-	const user = JSON.parse(localStorage.getItem('user'));
-	const userId = user.id;
+  
+    // a LOT of state handling stuff
+    const [isLoading, setIsLoading ] = useState(true);
+    const [isError, setIsError ] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
-	const [isLoading, setIsLoading ] = useState(false);
-	const [isError, setIsError ] = useState(false);
-	const [errorAlert, setErrorAlert ] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [membersPerPage, setMembersPerPage] = useState(25);
 
-	const [proxyView, setProxyView] = useState(false);
+    const [members, setMembers ] = useState([]);
+
+    const [searchBy, setSearchBy] = useState('name');
+    const [sortBy, setSortBy] = useState('name');
+    const [sortOrder, setSortOrder] = useState('ascending');
+	const [privacyFilter, setPrivacyFilter] = useState('all');
+
+	const [proxyTags, setProxyTags] = useState([]);
 	const [privacyView, setPrivacyView] = useState(false);
-	const [currentPage, setCurrentPage] = useState(1);
-	const [membersPerPage, setMembersPerPage] = useState(25);
-
+	const [proxyView, setProxyView] = useState(false);
 	const [open, setOpen] = useState(false);
-	const closeModal = () => setOpen(false);
 
-	const [members, setMembers ] = useState([]);
-
-	const [searchBy, setSearchBy] = useState('name')
-	const [privacyFilter, setPrivacyFilter] = useState('all')
-	const [sortBy, setSortBy] = useState('name')
-	const [sortOrder, setSortOrder] = useState('ascending')
-
-	const [value, setValue] = useState('');
-	const [proxyTags, setProxyTags] = useState([{
-		prefix: "", suffix: ""
-	}]);
+    // TODO: does this need to be an useState hook?
+    const [value, setValue] = useState('');
 
 	const {register, handleSubmit, setValue: setTemplate} = useForm();
 
-	const fetchMembers = useCallback( () => {
-		setIsLoading(true);
-		setIsError(false);
-		setMembersPerPage(localStorage.getItem("expandcards") ? 10 : 25);
-
-		 fetch(`${API_URL}s/${userId}/members`,{
-		method: 'GET',
-		headers: {
-			'Authorization': localStorage.getItem("token")
-		}}).then ( res => res.json()
-		).then (data => { 
-			setMembers(data)
-			setIsLoading(false);
-	})
-		.catch (error => { 
-				console.log(error);
-				setIsError(true);
-				setIsLoading(false);
-		})
-	}, [userId])
-
 	useEffect(() => {
 		fetchMembers();
-	}, [fetchMembers])
+	}, [])
+
+	const api = new PKAPI();
+
+	async function fetchMembers() {
+		try {
+            var res: Member[] = await api.getMemberList({token: localStorage.getItem('token')});
+            setMembers(res);
+            setIsLoading(false);
+        } catch (error) {
+            console.log(error);
+            setErrorMessage(error.message);
+            setIsError(true);
+            setIsLoading(false);
+        }
+	}
 
 	const indexOfLastMember = currentPage * membersPerPage;
 	const indexOfFirstMember = indexOfLastMember - membersPerPage;
@@ -85,7 +76,7 @@ export default function Memberlist() {
 		})
 
 		const currentMembers = Members1.filter(member => {
-			if (!value & privacyFilter === 'all') return true;
+			if (!value && privacyFilter === 'all') return true;
 			
 			if (privacyFilter === 'private') {
 				if (member.visibility !== 'private') {
@@ -159,27 +150,12 @@ export default function Memberlist() {
 			setProxyTags(oldTags => [...oldTags, {prefix: '', suffix: ''}] )
 		}
 
-		const submitMember = data => {
+		async function submitMember(data) {
 			setIsLoading(true);
 
-			const newdata = data.proxy_tags ? {...data, proxy_tags: data.proxy_tags.filter(tag => !(tag.prefix === "" && tag.suffix === ""))} : data
-
-			fetch(`${API_URL}m/`,{
-				method: 'POST',
-				body: JSON.stringify(newdata),
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': localStorage.getItem("token")
-				}}).then (res => res.json()
-				).then (data => { 
-						setErrorAlert(false);
-						closeModal();
-						fetchMembers();
-		}
-				).catch (error => {
-						console.error(error);
-						setErrorAlert(true);
-				});
+			const newData = data.proxy_tags ? {...data, proxy_tags: data.proxy_tags.filter(tag => !(tag.prefix === "" && tag.suffix === ""))} : data
+			
+			
 		}
 
 		return (
@@ -197,7 +173,7 @@ export default function Memberlist() {
 					<BS.InputGroup className="mb-3">
 					<BS.Form.Control disabled placeholder='Page length:'/>
 						<BS.Form.Control as="select" defaultValue={localStorage.getItem("expandcards") ? 10 : 25} onChange={e => {
-							setMembersPerPage(e.target.value);
+							setMembersPerPage(parseInt(e.target.value));
 							setCurrentPage(1);
 							}}>
 							<option>10</option>
@@ -288,23 +264,23 @@ export default function Memberlist() {
 					{ currentPage < pageAmount ? <BS.Pagination.Item  onClick={() => setCurrentPage(currentPage + 1)}>{currentPage + 1}</BS.Pagination.Item> : "" }
 					{ currentPage > pageAmount - 3 ? "" : currentPage === pageAmount - 3 ? <BS.Pagination.Item  onClick={() => setCurrentPage(pageAmount - 1)} active={pageAmount - 1 === active}>{pageAmount - 1}</BS.Pagination.Item> : <BS.Pagination.Ellipsis disabled />}
 					{ currentPage > pageAmount - 2 ? "" : <BS.Pagination.Item  onClick={() => setCurrentPage(pageAmount)} active={pageAmount === active}>{pageAmount}</BS.Pagination.Item>}
-					{ currentPage === pageAmount ? <BS.Pagination.Next disabled /> :<BS.Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} />}
+					{ currentPage >= pageAmount ? <BS.Pagination.Next disabled /> :<BS.Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} />}
 					</BS.Pagination>
 				</BS.Row>
 				{ isLoading ? <Loading /> : isError ? 
-				<BS.Alert variant="danger">Error fetching members.</BS.Alert> :
+				<BS.Alert variant="danger">{errorMessage}</BS.Alert> :
 				<>
 				<BS.Card className="w-100">
 					<BS.Card.Header className="d-flex align-items-center justify-content-between">
 						<BS.Button variant="link" className="float-left" onClick={() => setOpen(o => !o)}><FaPlus className="mr-4"/>Add Member</BS.Button> 
-						<Popup open={open} position="top-center" modal>
+						<Popup open={open} position="top center" modal>
 							<BS.Container>
 								<BS.Card>
 									<BS.Card.Header>
 											<h5><FaPlus className="mr-3"/> Add member </h5>
 									</BS.Card.Header>
 									<BS.Card.Body>
-									{ errorAlert ? <BS.Alert variant="danger">Something went wrong, please try logging in and out again.</BS.Alert> : "" }
+									{ isError ? <BS.Alert variant="danger">Something went wrong, please try logging in and out again.</BS.Alert> : "" }
 										<BS.Form onSubmit={handleSubmit(submitMember)}>
 														<BS.Form.Text>
 														</BS.Form.Text>
@@ -324,7 +300,7 @@ export default function Memberlist() {
 												</BS.Col>
 												<BS.Col className="mb-lg-2" xs={12} lg={3}>
 														<BS.Form.Label>Pronouns:</BS.Form.Label>
-														<BS.Form.Control as="textarea" rows="1" name="pronouns" {...register("pronouns")} defaultValue={''} />
+														<BS.Form.Control as="textarea" rows={1} name="pronouns" {...register("pronouns")} defaultValue={''} />
 												</BS.Col>
 												<BS.Col className="mb-lg-2" xs={12} lg={3}>
 														<BS.Form.Label>Avatar url:</BS.Form.Label> 
@@ -356,9 +332,9 @@ export default function Memberlist() {
 										<BS.Col key={index} className="mb-lg-2" xs={12} lg={6}>
 												<BS.Form.Row>
 												<BS.InputGroup className="ml-1 mr-1 mb-1">
-												<BS.Form.Control as="textarea" rows="1" name={`proxy_tags[${index}].prefix`} defaultValue={item.prefix} {...register(`proxy_tags[${index}].prefix`)}/> 
-												<BS.Form.Control style={{flex: '0 0 3.5em'}} as="textarea" rows="1" disabled placeholder='text'/>
-												<BS.Form.Control as="textarea" rows="1" name={`proxy_tags[${index}].suffix`} defaultValue={item.suffix} {...register(`proxy_tags[${index}].suffix`)}/>
+												<BS.Form.Control as="textarea" rows={1} name={`proxy_tags[${index}].prefix`} defaultValue={item.prefix} {...register(`proxy_tags[${index}].prefix`)}/> 
+												<BS.Form.Control style={{flex: '0 0 3.5em'}} as="textarea" rows={1} disabled placeholder='text'/>
+												<BS.Form.Control as="textarea" rows={1} name={`proxy_tags[${index}].suffix`} defaultValue={item.suffix} {...register(`proxy_tags[${index}].suffix`)}/>
 												</BS.InputGroup>
 												</BS.Form.Row>
 										</BS.Col>
@@ -414,9 +390,9 @@ export default function Memberlist() {
 								<BS.Form.Group className="mt-3">
 												<BS.Form.Label>Description:</BS.Form.Label><br/>
 												{ localStorage.getItem('template1') ? <BS.Button className="mb-2" size="sm" variant="primary" onClick={() => setTemplate('description', localStorage.getItem('template1'))}>Template 1</BS.Button> : ""} { localStorage.getItem('template2') ? <BS.Button className="mb-2" size="sm" variant="primary" onClick={() => setTemplate('description', localStorage.getItem('template2'))}>Template 2</BS.Button> : ""} { localStorage.getItem('template3') ? <BS.Button className="mb-2" size="sm" variant="primary" onClick={() => setTemplate('description', localStorage.getItem('template3'))}>Template 3</BS.Button> : ""}
-												<BS.Form.Control maxLength="1000" as="textarea" rows="7" name="description" {...register("description")}  defaultValue={''}/>
+												<BS.Form.Control maxLength={1000} as="textarea" rows={7} name="description" {...register("description")}  defaultValue={''}/>
 										</BS.Form.Group>
-										<BS.Button variant="primary" type="submit">Submit</BS.Button> <BS.Button variant="light" className="float-right" onClick={closeModal}>Cancel</BS.Button>
+										<BS.Button variant="primary" type="submit">Submit</BS.Button> <BS.Button variant="light" className="float-right" onClick={() => setOpen(o => !o)}>Cancel</BS.Button>
 										</BS.Form>
 									</BS.Card.Body>
 								</BS.Card>
@@ -438,7 +414,7 @@ export default function Memberlist() {
 					{ currentPage < pageAmount ? <BS.Pagination.Item  onClick={() => setCurrentPage(currentPage + 1)}>{currentPage + 1}</BS.Pagination.Item> : "" }
 					{ currentPage > pageAmount - 3 ? "" : currentPage === pageAmount - 3 ? <BS.Pagination.Item  onClick={() => setCurrentPage(pageAmount - 1)} active={pageAmount - 1 === active}>{pageAmount - 1}</BS.Pagination.Item> : <BS.Pagination.Ellipsis disabled />}
 					{ currentPage > pageAmount - 2 ? "" : <BS.Pagination.Item  onClick={() => setCurrentPage(pageAmount)} active={pageAmount === active}>{pageAmount}</BS.Pagination.Item>}
-					{ currentPage === pageAmount ? <BS.Pagination.Next disabled /> :<BS.Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} />}
+					{ currentPage >= pageAmount ? <BS.Pagination.Next disabled /> :<BS.Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} />}
 					</BS.Pagination>
 				</BS.Row>
 				</>
