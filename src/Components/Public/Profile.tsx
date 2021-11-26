@@ -28,8 +28,9 @@ export default function Profile () {
     description: toHTML("(no description)", {}, null, null), // this has to be set to html because of the twemoji parsing while rendering
     tag: null,
     avatar_url: null,
-    tz: "UTC",
+    timezone: "UTC",
     color: null,
+    created: null
   });
 
   // initialize the API
@@ -55,8 +56,9 @@ export default function Profile () {
         ...(res.description && {description: toHTML(res.description, {}, null, null)}),
         ...(res.tag && {tag: res.tag}),
         ...(res.avatar_url && {avatar_url: res.avatar_url}),
-        ...(res.tz && {tz: res.tz}),
-        ...(res.color && {color: res.color})
+        ...(res.timezone && {timezone: res.timezone}),
+        ...(res.color && {color: res.color}),
+        ...(res.created && {created: res.created})
       });
       // aaand we're done loading!
       setIsLoading(false);
@@ -98,7 +100,7 @@ export default function Profile () {
         <BS.Row>
              <BS.Col className="mb-lg-3" xs={12} lg={3}><b>ID:</b> {system.id}</BS.Col>
              { system.tag ? <BS.Col className="mb-lg-3" xs={12} lg={3}><b>Tag:</b> {system.tag}</BS.Col> : "" }
-             <BS.Col className="mb-lg-3" xs={12} lg={3}><b>Timezone:</b> {system.tz}</BS.Col>
+             <BS.Col className="mb-lg-3" xs={12} lg={3}><b>Timezone:</b> {system.timezone}</BS.Col>
              { system.color ? <BS.Col className="mb-lg-3" xs={12} lg={3}><b>Color:</b> {system.color}</BS.Col> : ""}
              {system.banner ? 
                   <BS.Col className="mb-lg-3" xs={12} lg={3}>
