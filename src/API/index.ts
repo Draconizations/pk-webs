@@ -14,7 +14,9 @@ export default class PKAPI {
         GET_SYSTEM: (sid?: string) => sid ? `/systems/${sid}` : `/systems/@me`,
         GET_MEMBER_LIST: (sid?: string) => sid ? `/systems/${sid}/members` : `/systems/@me/members`,
         GET_MEMBER: (mid: string) => `/members/${mid}`,
-        GET_GROUP_LIST: (sid?: string) => sid ? `/systems/${sid}/groups` : `/systems/@me/groups`
+        GET_GROUP_LIST: (sid?: string) => sid ? `/systems/${sid}/groups` : `/systems/@me/groups`,
+
+        PATCH_SYSTEM: () => `/systems/@me`
     }
 
     baseUrl: string;
@@ -36,6 +38,20 @@ export default class PKAPI {
         var res: AxiosResponse;
         try {
             res = await this.handle(this.ROUTES.GET_SYSTEM(options.id ? options.id : ""), 'GET', {token: !options.id ? options.token : ""});
+            if (res.status === 200) system = new Sys(res.data);
+            else this.handleErrors(res);
+        } catch (error) {
+            throw new Error(error.message);
+        }
+        return system;
+    }
+
+    async patchSystem(options: {token: string, data: any}) {
+        var body = new Sys(options.data);
+        var system: Sys;
+        var res: AxiosResponse;
+        try {
+            res = await this.handle(this.ROUTES.PATCH_SYSTEM(), 'PATCH', {token: options.token, body: body});
             if (res.status === 200) system = new Sys(res.data);
             else this.handleErrors(res);
         } catch (error) {
