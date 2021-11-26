@@ -32,7 +32,6 @@ export default function GroupList() {
         try {
             var res: Group[] = await api.getGroupList({token: localStorage.getItem('token')});
             setGroups(res);
-            console.log(res);
             setIsLoading(false);
         } catch (error) {
             console.log(error);
