@@ -143,13 +143,11 @@ export default class PKAPI {
         else {
             let errorObject: any = res.data
             if (errorObject.code) {
-                if (errorObject.code === 4001) {
-                    let fieldErrors: string;
-                    for (const [key, value] of Object.entries(errorObject.errors)) {
-                        let Value = value as FieldError;
-                        fieldErrors += `${key}: ${Value.message}` 
+                if (errorObject.code === 40001) {
+                    var message: string;
+                    for (var key in errorObject.errors) {
+                        var val = errorObject.errors[key];
                     }
-                    throw new Error("The following fields are invalid:" + fieldErrors);
                 } else {
                     throw new Error(errorObject.message);
                 }
