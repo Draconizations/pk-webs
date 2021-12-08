@@ -11,7 +11,7 @@ import twemoji from 'twemoji';
 import defaultAvatar from '../../default_discord_avatar.png'
 import { FaLink } from "react-icons/fa";
 
-export default function MemberCard({member}) {
+export default function MemberCard({member, beta}) {
 
     const [ avatar, setAvatar ] = useState('')
     const [ displayName, setDisplayName ] = useState("");
@@ -130,7 +130,7 @@ export default function MemberCard({member}) {
             { !member.banner || !localStorage.getItem("bottombanners") ? "" : 
               <BS.Image rounded className="mb-2" style={{width: '100%', maxHeight: '15rem', objectFit: 'cover'}} src={banner}/>
             }
-            <BS.Row><BS.Col><Link to={`/profile/m/${member.id}`}><BS.Button variant="primary" className="float-right">View page</BS.Button></Link></BS.Col></BS.Row> </BS.Card.Body>
+            <BS.Row><BS.Col><Link to={!beta ? `/profile/m/${member.id}` : `/profile/m/${member.id}?beta=true`}><BS.Button variant="primary" className="float-right">View page</BS.Button></Link></BS.Col></BS.Row> </BS.Card.Body>
         )
     }
 

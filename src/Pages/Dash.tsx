@@ -22,6 +22,7 @@ export default function Dash({}) {
     else return (<>
             { user.banner && !localStorage.getItem("hidebanners") ? <div className="banner" style={{backgroundImage: `url(${user.banner})`}}/> : ""}
             
+            { localStorage.getItem("betabot") ? <BS.Alert variant="info">You are currently using the beta bot.</BS.Alert> : ""}
             <BS.Tabs id="dash-tabs" activeKey={tabView} onSelect={(k) => setTabView(k)} className="flex-column flex-md-row" >
                 <BS.Tab className="pt-2" eventKey="system" title="System">
                     <System />

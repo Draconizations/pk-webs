@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import * as BS from 'react-bootstrap';
 import Popup from 'reactjs-popup';
 import twemoji from 'twemoji';
 import { FaAddressCard } from "react-icons/fa";
 import defaultAvatar from '../../default_discord_avatar.png'
 import Loading from "../Loading.js";
-import { API_V2_URL } from "../../Constants/constants.js";
 import ProfileList from "./ProfileList";
 import PKAPI from "../../API/index"
 import Sys from '../../API/system';
 import { toHTML } from '../../Functions/discord-parser.js';
+import { BETA_URL } from '../../Constants/constants.js';
 
 export default function Profile () {
 
@@ -19,6 +19,15 @@ export default function Profile () {
     sysID: string
   }
   const { sysID } = useParams<sysParams>();
+
+  // for beta bot use
+  function useQuery() {
+    const { search } = useLocation();
+  
+    return React.useMemo(() => new URLSearchParams(search), [search]);
+  }
+
+  let query = useQuery();
 
   // set a blank slate for the system
   const [system, setSystem] = useState({
@@ -34,7 +43,7 @@ export default function Profile () {
   });
 
   // initialize the API
-  var api = new PKAPI(API_V2_URL);
+  var api = new PKAPI(query.get("beta") ? BETA_URL : "");
 
   // some state handling stuff
   const [ isLoading, setIsLoading ] = useState(true);
@@ -81,7 +90,7 @@ export default function Profile () {
   // TODO: clean this absolute MESS up
   else return (
     <>{ system.banner && !localStorage.getItem("hidebanners") ? <div className="banner" style={{backgroundImage: `url(${system.banner})`}}/> : ""}
-    <BS.Alert variant="primary" >You are currently <b>viewing</b> a system.</BS.Alert>
+    { query.get("beta") ? <BS.Alert variant="info">You are currently <b>viewing</b> the beta bot.</BS.Alert> : <BS.Alert variant="primary" >You are currently <b>viewing</b> a system.</BS.Alert>}
         <BS.Card className="mb-3 mt-3 w-100" >
         <BS.Card.Header className="d-flex align-items-center justify-content-between">
            <BS.Card.Title className="float-left"><FaAddressCard className="mr-4 float-left" /> {system.name ? system.name : ""} ({system.id})</BS.Card.Title> 

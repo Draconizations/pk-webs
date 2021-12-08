@@ -7,7 +7,7 @@ import * as BS from "react-bootstrap";
 import history from "../History.js";
 import { FaLockOpen, FaHome } from "react-icons/fa";
 
-import API_URL from "../Constants/constants.js";
+import API_URL, { BETA_URL } from "../Constants/constants.js";
 import { API_V2_URL } from "../Constants/constants.js";
 import PKAPI from "../API/index";
 import Sys from "../API/system";
@@ -19,12 +19,12 @@ const Home = ({isInvalid, setIsInvalid, isLoading, setIsLoading, isSubmit, setIs
 
 	// submit login form, add the token to the localstorage
 	const onSubmit = (data) => {
+		if (data.betaBot) localStorage.setItem("betabot", "true");
 		logIn(data.pkToken);
 	};
 
-	const api = new PKAPI();
-
 	async function logIn(token: string) {
+		const api = new PKAPI(localStorage.getItem("betabot") ? BETA_URL : "");
 		// make sure the token is not set to invalid and add a funny little spinner to indicate loading
 		setIsInvalid(false);
 		setIsLoading(true);
@@ -48,6 +48,7 @@ const Home = ({isInvalid, setIsInvalid, isLoading, setIsLoading, isSubmit, setIs
 	// Logout function
 	function logOut() {
 		setIsSubmit(false);
+		localStorage.removeItem("betabot")
 		localStorage.removeItem("token");
 		localStorage.removeItem("user");
 		history.push("/");
@@ -130,10 +131,15 @@ const Home = ({isInvalid, setIsInvalid, isLoading, setIsLoading, isSubmit, setIs
 											placeholder="token"
 										/>
 									</BS.Col>
-									<BS.Col>
+									<BS.Col className="mb-2">
 										<BS.Button variant="primary" type="submit" block>
 											Submit
 										</BS.Button>
+									</BS.Col>
+								</BS.Form.Row>
+								<BS.Form.Row>
+									<BS.Col>
+										<BS.Form.Check type="checkbox" id="betabot" label="Use the beta bot in the dash" {...register("betaBot")}/>
 									</BS.Col>
 								</BS.Form.Row>
 							</BS.Form>

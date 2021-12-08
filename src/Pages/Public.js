@@ -12,13 +12,13 @@ export default function Public () {
     const { register: registerSys, handleSubmit: handleSys } = useForm();
 
     const submitSysID = (data) => {
-        history.push(`${url}/${data.sysID}`);
+        history.push(!data.betaBot ? `${url}/${data.sysID}` : `${url}/${data.sysID.trim()}?beta=true`);
     }
 
     const { register: registerMember, handleSubmit: handleMember } = useForm();
 
     const submitMemberID = (data) => {
-        history.push(`${url}/m/${data.memberID}`);
+        history.push(!data.betaBot ? `${url}/m/${data.memberID}` : `${url}/m/${data.memberID.trim()}?beta=true`);
     }
 
     return (
@@ -42,6 +42,11 @@ export default function Public () {
                             <BS.Button variant="primary" type="submit" block >Submit</BS.Button>
                         </BS.Col>
                     </BS.Form.Row>
+                    <BS.Form.Row>
+                        <BS.Col>
+                            <BS.Form.Check type="checkbox" id="betabot" label="Use the beta bot" {...registerSys("betaBot")}/>
+                        </BS.Col>
+                    </BS.Form.Row>
                 </BS.Form>
             </BS.Card.Body>
         </BS.Card>
@@ -57,6 +62,11 @@ export default function Public () {
                         </BS.Col>
                         <BS.Col>
                             <BS.Button variant="primary" type="submit" block >Submit</BS.Button>
+                        </BS.Col>
+                    </BS.Form.Row>
+                    <BS.Form.Row>
+                        <BS.Col>
+                            <BS.Form.Check type="checkbox" id="betabot" label="Use the beta bot" {...registerMember("betaBot")}/>
                         </BS.Col>
                     </BS.Form.Row>
                 </BS.Form>

@@ -10,10 +10,10 @@ import twemoji from 'twemoji';
 import defaultAvatar from '../../default_discord_avatar.png'
 import { FaLink } from "react-icons/fa";
 
-export default function ProfilePage(props) {
+export default function ProfilePage({m, beta}) {
 
     const location = useLocation();
-    const member = props.member;
+    const member = m;
 
     const [ avatar, setAvatar ] = useState('')
     const [ banner, setBanner ] = useState("");
@@ -155,7 +155,7 @@ export default function ProfilePage(props) {
             { !member.banner || !localStorage.getItem("bottombanners") ? "" : 
               <BS.Image rounded className="mb-2" style={{width: '100%', maxHeight: '15rem', objectFit: 'cover'}} src={banner}/>
             }
-            {<BS.Row><BS.Col><Link to={`/profile/${member.system}`}><BS.Button variant="primary" className="float-right">Back to system</BS.Button></Link></BS.Col></BS.Row>}
+            {<BS.Row><BS.Col><Link to={!beta ? `/profile/${member.system}` : `/profile/${member.system}?beta=true`}><BS.Button variant="primary" className="float-right">Back to system</BS.Button></Link></BS.Col></BS.Row>}
             </BS.Card.Body>
         </BS.Card>
         </>

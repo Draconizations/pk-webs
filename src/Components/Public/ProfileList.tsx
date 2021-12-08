@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Switch, Route, useParams, useRouteMatch } from 'react-router-dom';
+import { Switch, Route, useParams, useRouteMatch, useLocation } from 'react-router-dom';
 import  * as BS from 'react-bootstrap'
 import 'reactjs-popup/dist/index.css';
 
 import ProfileCard from './ProfileCard'
 import Loading from "../Loading.js";
 import Member from '../../API/member';
-import { API_V2_URL } from "../../Constants/constants.js";
+import { API_V2_URL, BETA_URL } from "../../Constants/constants.js";
 import PKAPI from "../../API/index"
 
 export default function ProfileList() {
@@ -18,6 +18,14 @@ export default function ProfileList() {
       sysID: string
     }
     const { sysID } = useParams<sysParams>();
+
+    function useQuery() {
+      const { search } = useLocation();
+    
+      return React.useMemo(() => new URLSearchParams(search), [search]);
+    }
+  
+    let query = useQuery();
   
     // a LOT of state handling stuff
     const [isLoading, setIsLoading ] = useState(true);
@@ -36,7 +44,7 @@ export default function ProfileList() {
     // TODO: does this need to be an useState hook?
     const [value, setValue] = useState('');
 
-  var api = new PKAPI(API_V2_URL);
+    var api = new PKAPI(query.get("beta") ? BETA_URL : "");
 
   useEffect(() => {
     fetchMembers();
@@ -44,6 +52,7 @@ export default function ProfileList() {
 
   async function fetchMembers() {
     try {
+      setIsLoading(true);
       var res: Member[] = await api.getMemberList({id: sysID});
       setMembers(res);
       setIsLoading(false);
@@ -119,7 +128,8 @@ export default function ProfileList() {
 
       const memberList = sortMembers.map((member) => <BS.Card key={member.id} className={localStorage.getItem("expandcards") ? "mb-3" : ""}>
       <ProfileCard
-      member={member} 
+      member={member}
+      beta={query.get("beta")} 
       />
     </BS.Card>
     );

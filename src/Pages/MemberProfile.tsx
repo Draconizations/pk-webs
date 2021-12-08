@@ -1,13 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import  * as BS from 'react-bootstrap';
 
 import Loading from '../Components/Loading';
-import API_URL from '../Constants/constants';
+import API_URL, { BETA_URL } from '../Constants/constants';
 import PKAPI from "../API/index"
 import ProfilePage from '../Components/Public/ProfilePage';
 
 const MemberProfile = () => {
+	function useQuery() {
+		const { search } = useLocation();
+		return React.useMemo(() => new URLSearchParams(search), [search]);
+	  }
+	
+	let query = useQuery();
+
 	type memberParams = {
 		memberID: string
 	}
@@ -22,7 +29,7 @@ const MemberProfile = () => {
 		fetchMember();
 	}, []);
 
-	var api = new PKAPI();
+	var api = new PKAPI(query.get("beta") ? BETA_URL : "");
 
 	async function fetchMember() {
 		try {
@@ -39,7 +46,7 @@ const MemberProfile = () => {
 
 	return (
 			isLoading ? <Loading /> : isError ? 
-			<BS.Alert variant="danger">{errorMessage}</BS.Alert> : <ProfilePage member={member}/>
+			<BS.Alert variant="danger">{errorMessage}</BS.Alert> : <ProfilePage beta={query.get("beta")} m={member}/>
 	);
 }
 

@@ -13,6 +13,7 @@ import moment from 'moment';
 import Sys from "../../API/system";
 import PKAPI from "../../API/index";
 import { toHTML } from "../../Functions/discord-parser.js";
+import { BETA_URL } from "../../Constants/constants.js";
 
 
 export default function System() {
@@ -45,7 +46,7 @@ export default function System() {
 	const [errorAlert, setErrorAlert] = useState(false);
 	const [ errorMessage, setErrorMessage ] = useState("");
 
-	const api = new PKAPI();
+	const api = new PKAPI(localStorage.getItem("betabot") ? BETA_URL : "");
 
 	// replace the blank user slate with the user from localstorage
 	useEffect(() => {
