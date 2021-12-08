@@ -5,6 +5,7 @@ import PKAPI from "../../API/index"
 import Group from '../../API/group.js';
 import { FaSearch } from "react-icons/fa";
 import { group } from 'console';
+import GroupCard from './GroupCard';
 
 export default function GroupList({fetchGroups, groupsLoading, groupsError, groupsErrorMessage, groups, setGroups}) {
 
@@ -73,8 +74,14 @@ export default function GroupList({fetchGroups, groupsLoading, groupsError, grou
 
     const slicedGroups = sortedGroups.slice(indexOfFirstGroup, indexOfLastGroup);
 
-    const groupsList = slicedGroups.map(group => <><span>{group.name} | {group.displayName} | {group.id}</span><br/></>)
-    
+    const groupsList = slicedGroups.map((group) => <BS.Card key={group.id} className={localStorage.getItem("expandcards") ? "mb-3" : ""}>
+			<GroupCard
+			group={group} 
+			edit={groupEdit => setGroups(groups.map(group => group.id === groupEdit.id ? Object.assign(group, groupEdit) : group))}
+			/>
+			</BS.Card>
+    )
+
     return(
     <>
     <BS.Card className="mb-4">
@@ -167,7 +174,9 @@ export default function GroupList({fetchGroups, groupsLoading, groupsError, grou
             { currentPage >= pageAmount ? <BS.Pagination.Next disabled /> :<BS.Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} />}
         </BS.Pagination>
       </BS.Row>
-        {groupsList}
+      <BS.Accordion className="mb-3 mt-3 w-100" defaultActiveKey="0">
+				{groupsList}
+			</BS.Accordion>
     <BS.Row className="justify-content-md-center">
         <BS.Pagination className="ml-auto mr-auto">
             { currentPage === 1 ? <BS.Pagination.Prev disabled/> : <BS.Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} />}
