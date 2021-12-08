@@ -7,6 +7,7 @@ import { useLocation } from 'react-router-dom';
 import GroupList from '../Components/Private/GroupList';
 import PKAPI from '../API';
 import Group from '../API/group';
+import { BETA_URL } from '../Constants/constants';
 
 export default function Dash({}) {
     type dashLocation = {
