@@ -9,6 +9,7 @@ import MemberCard from './MemberCard.js'
 import MemberPages from '../../Pages/MemberPages.js'
 import Loading from "../Loading.js";
 import PKAPI from '../../API/index';
+import { BETA_URL } from '../../Constants/constants.js';
 import Member from '../../API/member';
 
 import { FaPlus, FaSearch } from "react-icons/fa";
@@ -46,7 +47,7 @@ export default function Memberlist() {
 		fetchMembers();
 	}, [])
 
-	const api = new PKAPI();
+	const api = new PKAPI(localStorage.getItem("betabot") ? BETA_URL : "");
 
 	async function fetchMembers() {
 		try {
@@ -144,6 +145,7 @@ export default function Memberlist() {
 			edit={memberEdit => setMembers(members.map(member => member.id === memberEdit.id ? Object.assign(member, memberEdit) : member))}
 			/>
 		</BS.Card>
+			</BS.Card>
 		);
 
 		function addProxyField() {

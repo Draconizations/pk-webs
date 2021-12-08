@@ -16,7 +16,9 @@ export default class PKAPI {
         GET_MEMBER: (mid: string) => `/members/${mid}`,
         GET_GROUP_LIST: (sid?: string) => sid ? `/systems/${sid}/groups` : `/systems/@me/groups`,
 
-        PATCH_SYSTEM: () => `/systems/@me`
+        PATCH_SYSTEM: () => `/systems/@me`,
+        
+        POST_MEMBER: () => `/members`
     }
 
     baseUrl: string;
@@ -98,6 +100,21 @@ export default class PKAPI {
         return member;
     }
 
+    async postMember(options: {token: any, data: any}) {
+        if (!options.token) throw new Error("Must pass a token.");
+        var body = new Member(options.data);
+        var member: Member;
+        var res: AxiosResponse;
+        try {
+            res = await this.handle(this.ROUTES.POST_MEMBER(), 'POST', {token: options.token, body: body});
+            if (res.status === 200) member = new Member(res.data);
+            else this.handleErrors(res);
+        } catch (error) {
+            throw new Error(error.message);
+        }
+        return member;
+    }
+
     async getGroupList(options: {token?: string, id?: any}) {
         if (!options.token && !options.id) {
             throw new Error("Must pass a token or id.");
@@ -122,7 +139,6 @@ export default class PKAPI {
 
     handleErrors(res: any) {
         if (res.status === 500) throw new Error("500: Internal server error.");
-        else if (res.status === 400) throw new Error("400: Bad request.");
         else if (res.status === 401) throw new Error("401: Your token is invalid.");
         else {
             let errorObject: any = res.data
