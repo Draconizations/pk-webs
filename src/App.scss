@@ -153,6 +153,18 @@ html, body {
   border: $gray-900;
 }
 
+.dark-mode .alert-warning {
+  color: $gray-800;
+  background-color: $warning;
+  border: $gray-900;
+}
+
+.dark-mode .alert-info {
+  color: $white;
+  background-color: $info;
+  border: $gray-900;
+}
+
 .dark-mode .alert-light {
   color: $white;
   background-color: $gray-900;
