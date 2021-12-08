@@ -4,42 +4,18 @@ import { API_V2_URL } from "../../Constants/constants.js";
 import PKAPI from "../../API/index"
 import Group from '../../API/group.js';
 import { FaSearch } from "react-icons/fa";
+import { group } from 'console';
 
-export default function GroupList() {
-
-    const [isLoading, setIsLoading ] = useState(true);
-    const [isError, setIsError ] = useState(false);
-    const [ errorMessage, setErrorMessage] = useState("");
+export default function GroupList({fetchGroups, groupsLoading, groupsError, groupsErrorMessage, groups, setGroups}) {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [groupsPerPage, setGroupsPerPage] = useState(25);
-
-    const [groups, setGroups ] = useState([]);
 
     const [searchBy, setSearchBy] = useState('name')
     const [sortBy, setSortBy] = useState('name')
     const [sortOrder, setSortOrder] = useState('ascending')
 
     const [value, setValue] = useState('');
-
-    var api = new PKAPI(API_V2_URL);
-    
-    useEffect(() => {
-        fetchGroups();
-    }, []);
-
-    async function fetchGroups() {
-        try {
-            var res: Group[] = await api.getGroupList({token: localStorage.getItem('token')});
-            setGroups(res);
-            setIsLoading(false);
-        } catch (error) {
-            console.log(error);
-            setErrorMessage(error.message);
-            setIsError(true);
-            setIsLoading(false);
-        }
-    }
 
     const indexOfLastGroup = currentPage * groupsPerPage;
     const indexOfFirstGroup = indexOfLastGroup - groupsPerPage;
