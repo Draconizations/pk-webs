@@ -22,11 +22,11 @@ const Settings = ({ forceUpdate }) => {
 					and on different devices.
 				</p>
 				<hr />
-				<BS.Row>
+				<BS.Row className="px-3">
 					<BS.Col
 						xs={12}
-						lg={4}
-						className="mx-1 mb-4 d-flex align-items-center row"
+						lg={6}
+						className="mb-4 d-flex align-items-center row"
 					>
 						{localStorage.getItem("opendyslexic") ? (
 							<Toggle
@@ -53,8 +53,8 @@ const Settings = ({ forceUpdate }) => {
 					</BS.Col>
 					<BS.Col
 						xs={12}
-						lg={4}
-						className="mx-1 mb-4 d-flex align-items-center row"
+						lg={6}
+						className="mb-4 d-flex align-items-center row"
 					>
 						{localStorage.getItem("twemoji") ? (
 							<Toggle
@@ -81,8 +81,8 @@ const Settings = ({ forceUpdate }) => {
 					</BS.Col>
 					<BS.Col
 						xs={12}
-						lg={4}
-						className="mx-1 mb-4 d-flex align-items-center row"
+						lg={6}
+						className="mb-4 d-flex align-items-center row"
 					>
 						{localStorage.getItem("pagesonly") ? (
 							<Toggle
@@ -109,8 +109,8 @@ const Settings = ({ forceUpdate }) => {
 					</BS.Col>
 					<BS.Col
 						xs={12}
-						lg={4}
-						className="mx-1 mb-4 d-flex align-items-center row"
+						lg={6}
+						className="mb-4 d-flex align-items-center row"
 					>
 						{localStorage.getItem("fullbg") ? (
 							<Toggle
@@ -137,8 +137,8 @@ const Settings = ({ forceUpdate }) => {
 					</BS.Col>
 					<BS.Col
 						xs={12}
-						lg={4}
-						className="mx-1 mb-4 d-flex align-items-center row"
+						lg={6}
+						className="mb-4 d-flex align-items-center row"
 					>
 						{localStorage.getItem("colorbg") ? (
 							<Toggle
@@ -165,8 +165,8 @@ const Settings = ({ forceUpdate }) => {
 					</BS.Col>
 					<BS.Col
 						xs={12}
-						lg={4}
-						className="mx-1 mb-4 d-flex align-items-center row"
+						lg={6}
+						className="mb-4 d-flex align-items-center row"
 					>
 						{localStorage.getItem("expandcards") ? (
 							<Toggle
@@ -193,8 +193,8 @@ const Settings = ({ forceUpdate }) => {
 					</BS.Col>
 					<BS.Col
 						xs={12}
-						lg={4}
-						className="mx-1 mb-4 d-flex align-items-center row"
+						lg={6}
+						className="mb-4 d-flex align-items-center row"
 					>
 						{localStorage.getItem("hidebanners") ? (
 							<Toggle
@@ -221,8 +221,8 @@ const Settings = ({ forceUpdate }) => {
 					</BS.Col>
 					<BS.Col
 						xs={12}
-						lg={4}
-						className="mx-1 mb-4 d-flex align-items-center row"
+						lg={6}
+						className="mb-4 d-flex align-items-center row"
 					>
 						{localStorage.getItem("bottombanners") ? (
 							<Toggle
