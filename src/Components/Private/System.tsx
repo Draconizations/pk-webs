@@ -52,13 +52,12 @@ export default function System() {
 	useEffect(() => {
 		const { toHTML } = require("../../Functions/discord-parser.js");
 		var local= new Sys(JSON.parse(localStorage.getItem("user")));
-		console.log(local);
 
 		setUser({...user,
 			...(local.id && {id: local.id}),
 			...(local.name && {name: local.name}),
 			...(local.banner && {banner: local.banner}),
-			...(local.description && {description: toHTML(local.description, {}, null, null)}),
+			...(local.description && {description: local.description}),
 			...(local.tag && {tag: local.tag}),
 			...(local.avatar_url && {avatar_url: local.avatar_url}),
 			...(local.timezone && {timezone: local.timezone}),
@@ -84,7 +83,6 @@ export default function System() {
 	}
 
 	async function submitEdit(data) {
-		console.log(data);
 		if (data.timezone) {
 			if (!moment.tz.zone(data.timezone)) {
 			setInvalidTimezone(true);
@@ -297,8 +295,8 @@ export default function System() {
 						<p>
 							<b>Description:</b>
 						</p>
-						{ localStorage.getItem("twemoji") ? <p dangerouslySetInnerHTML={{__html: twemoji.parse(user.description)}}></p> : <p dangerouslySetInnerHTML={{__html: user.description}}></p>}
-						{ !user.banner || !localStorage.getItem("bottombanners") ? "" : 
+						{ localStorage.getItem("twemoji") ? <p dangerouslySetInnerHTML={{__html: twemoji.parse(toHTML(user.description, {}, null, null))}}></p> : <p dangerouslySetInnerHTML={{__html: toHTML(user.description, {}, null, null)}}></p>}
+						{ !user.banner || localStorage.getItem("bottombanners") ? "" : 
 							<BS.Image rounded className="mb-2" style={{width: '100%', maxHeight: '15rem', objectFit: 'cover'}} src={user.banner}/>
 						}
 							<>
