@@ -282,7 +282,7 @@ export default function Memberlist() {
 											<h5><FaPlus className="mr-3"/> Add member </h5>
 									</BS.Card.Header>
 									<BS.Card.Body>
-									{ isError ? <BS.Alert variant="danger">Something went wrong, please try logging in and out again.</BS.Alert> : "" }
+									{ isPostError ? <BS.Alert variant="danger">{postErrorMessage}</BS.Alert> : "" }
 										<BS.Form onSubmit={handleSubmit(submitMember)}>
 														<BS.Form.Text>
 														</BS.Form.Text>

@@ -127,7 +127,7 @@ export default function MemberCard({member, beta}) {
             <hr/></> : "" }
             <p><b>Description:</b></p>
             { localStorage.getItem("twemoji") ? <p dangerouslySetInnerHTML={{__html: twemoji.parse(desc)}}></p> : <p dangerouslySetInnerHTML={{__html: desc}}></p>}
-            { !member.banner || !localStorage.getItem("bottombanners") ? "" : 
+            { !member.banner || localStorage.getItem("bottombanners") ? "" : 
               <BS.Image rounded className="mb-2" style={{width: '100%', maxHeight: '15rem', objectFit: 'cover'}} src={banner}/>
             }
             <BS.Row><BS.Col><Link to={!beta ? `/profile/m/${member.id}` : `/profile/m/${member.id}?beta=true`}><BS.Button variant="primary" className="float-right">View page</BS.Button></Link></BS.Col></BS.Row> </BS.Card.Body>

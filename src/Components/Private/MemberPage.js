@@ -238,7 +238,7 @@ export default function MemberPage(props) {
         </BS.Card.Body></BS.Card> :
         <>
         { localStorage.getItem('colorbg') && member.color ? "" : <><div className="backdrop" style={{backgroundColor: `#${color}`}}/>
-        { !localStorage.getItem('fullbg') ? <div className="backdrop-overlay"/> : "" }</> }
+        { localStorage.getItem('fullbg') ? <div className="backdrop-overlay"/> : "" }</> }
         { member.banner && !localStorage.getItem("hidebanners") ? <div className="banner" style={{backgroundImage: `url(${banner})`}} alt=""/> : ""}
         <BS.Card className="mb-5">
         <BS.Card.Header className="d-flex align-items-center justify-content-between">
@@ -454,7 +454,7 @@ export default function MemberPage(props) {
             <hr/></> : "" }
             <p><b>Description:</b></p>
             { localStorage.getItem("twemoji") ? <p dangerouslySetInnerHTML={{__html: twemoji.parse(desc)}}></p> : <p dangerouslySetInnerHTML={{__html: desc}}></p>}
-            { !member.banner || !localStorage.getItem("bottombanners") ? "" : 
+            { !member.banner || localStorage.getItem("bottombanners") ? "" : 
               <BS.Image rounded className="mb-2" style={{width: '100%', maxHeight: '15rem', objectFit: 'cover'}} src={banner}/>
             }
                 { proxyView ? "" : privacyMode ? "" : privacyView ? "" : <><BS.Button variant="light" onClick={() => setEditMode(true)}>Edit</BS.Button> <Link to="/dash" ><BS.Button variant="primary" className="float-right">Back</BS.Button></Link></>}

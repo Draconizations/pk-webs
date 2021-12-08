@@ -86,7 +86,7 @@ export default function ProfilePage({m, beta}) {
     return (
        <> 
        { localStorage.getItem('colorbg') && member.color ? "" : <><div className="backdrop" style={{backgroundColor: `#${color}`}}/>
-        { !localStorage.getItem('fullbg') ? <div className="backdrop-overlay"/> : "" }</> }
+        { localStorage.getItem('fullbg') ? <div className="backdrop-overlay"/> : "" }</> }
         { member.banner && !localStorage.getItem("hidebanners") ? <div className="banner" style={{backgroundImage: `url(${banner})`}}/> : ""}
         <BS.Alert variant="primary" >You are currently <b>viewing</b> a member.</BS.Alert>
         <BS.Card className="mb-5">
@@ -152,7 +152,7 @@ export default function ProfilePage({m, beta}) {
             <hr/></> : "" }
             <p><b>Description:</b></p>
             { localStorage.getItem("twemoji") ? <p dangerouslySetInnerHTML={{__html: twemoji.parse(desc)}}></p> : <p dangerouslySetInnerHTML={{__html: desc}}></p>}
-            { !member.banner || !localStorage.getItem("bottombanners") ? "" : 
+            { !member.banner || localStorage.getItem("bottombanners") ? "" : 
               <BS.Image rounded className="mb-2" style={{width: '100%', maxHeight: '15rem', objectFit: 'cover'}} src={banner}/>
             }
             {<BS.Row><BS.Col><Link to={!beta ? `/profile/${member.system}` : `/profile/${member.system}?beta=true`}><BS.Button variant="primary" className="float-right">Back to system</BS.Button></Link></BS.Col></BS.Row>}

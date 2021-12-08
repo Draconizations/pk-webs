@@ -128,12 +128,12 @@ const Settings = ({ forceUpdate }) => {
 								defaultChecked={false}
 								icons={false}
 								onChange={() => {
-									localStorage.setItem("fullbg", "true");
+									localStorage.setItem("fullbg", "false");
 									forceUpdate();
 								}}
 							/>
 						)}
-						Remove gradient from background color?
+						Add gradient to background color?
 					</BS.Col>
 					<BS.Col
 						xs={12}
@@ -240,12 +240,12 @@ const Settings = ({ forceUpdate }) => {
 								defaultChecked={false}
 								icons={false}
 								onChange={() => {
-									localStorage.setItem("bottombanners", "true");
+									localStorage.setItem("bottombanners", "false");
 									forceUpdate();
 								}}
 							/>
 						)}
-						Show banners at the bottom?
+						Hide banners at the bottom?
 					</BS.Col>
 				</BS.Row>
 			</BS.Card.Body>

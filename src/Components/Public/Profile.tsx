@@ -139,7 +139,7 @@ export default function Profile () {
          </BS.Row>
          <p><b>Description:</b></p>
          {localStorage.getItem("twemoji") ? <p dangerouslySetInnerHTML={{__html: twemoji.parse(system.description)}}></p> : <p dangerouslySetInnerHTML={{__html: system.description}}></p>}
-         { !system.banner || !localStorage.getItem("bottombanners") ? "" : 
+         { !system.banner || localStorage.getItem("bottombanners") ? "" : 
               <BS.Image rounded className="mb-2" style={{width: '100%', maxHeight: '15rem', objectFit: 'cover'}} src={system.banner}/>
             }
          </BS.Card.Body>
