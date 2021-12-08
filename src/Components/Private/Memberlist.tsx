@@ -22,6 +22,8 @@ export default function Memberlist() {
     const [isLoading, setIsLoading ] = useState(true);
     const [isError, setIsError ] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+	const [isPostError, setIsPostError] = useState(false);
+	const [postErrorMessage, setPostErrorMessage] = useState("");
 
     const [currentPage, setCurrentPage] = useState(1);
     const [membersPerPage, setMembersPerPage] = useState(25);
@@ -51,6 +53,7 @@ export default function Memberlist() {
 
 	async function fetchMembers() {
 		try {
+			setIsLoading(true);
             var res: Member[] = await api.getMemberList({token: localStorage.getItem('token')});
             setMembers(res);
             setIsLoading(false);
@@ -144,7 +147,6 @@ export default function Memberlist() {
 			member={member} 
 			edit={memberEdit => setMembers(members.map(member => member.id === memberEdit.id ? Object.assign(member, memberEdit) : member))}
 			/>
-		</BS.Card>
 			</BS.Card>
 		);
 
@@ -153,11 +155,19 @@ export default function Memberlist() {
 		}
 
 		async function submitMember(data) {
-			setIsLoading(true);
-
 			const newData = data.proxy_tags ? {...data, proxy_tags: data.proxy_tags.filter(tag => !(tag.prefix === "" && tag.suffix === ""))} : data
-			
-			
+			try {
+				setIsLoading(true);
+				var res: Member = await api.postMember({token: localStorage.getItem("token"), data: data});
+				setMembers(members => [...members, res]);
+				setOpen(false);
+				setIsLoading(false);
+			} catch (error) {
+				console.log(error);
+				setPostErrorMessage(error.message);
+				setIsPostError(true);
+				setIsLoading(false);
+			}
 		}
 
 		return (
