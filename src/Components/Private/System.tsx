@@ -21,9 +21,10 @@ export default function System() {
 	// set a blank slate for the user
 	const [user, setUser] = useState({
 		id: "",
+		uuid: "",
 		name: null,
 		banner: null,
-		description: toHTML("(no description)", {}, null, null), // this has to be set to html because of the twemoji parsing while rendering
+		description: "(no description)",
 		tag: null,
 		avatar_url: null,
 		timezone: "UTC",
@@ -55,6 +56,7 @@ export default function System() {
 
 		setUser({...user,
 			...(local.id && {id: local.id}),
+			...(local.uuid && {uuid: local.uuid}),
 			...(local.name && {name: local.name}),
 			...(local.banner && {banner: local.banner}),
 			...(local.description && {description: local.description}),
@@ -62,7 +64,14 @@ export default function System() {
 			...(local.avatar_url && {avatar_url: local.avatar_url}),
 			...(local.timezone && {timezone: local.timezone}),
 			...(local.color && {color: local.color}),
-			...(local.created && {created: moment(local.created).format('MMM D, YYYY')})
+			...(local.created && {created: moment(local.created).format('MMM D, YYYY')}),
+			privacy: {
+				...local.privacy.description_privacy && {description_privacy: local.privacy.description_privacy},
+				...local.privacy.front_history_privacy && {front_history_privacy: local.privacy.front_history_privacy},
+				...local.privacy.member_list_privacy && {member_list_privacy: local.privacy.member_list_privacy},
+				...local.privacy.front_privacy && {front_privacy: local.privacy.front_privacy},
+				...local.privacy.group_list_privacy && {group_list_privacy: local.privacy.group_list_privacy}
+			}
 			});
 	}, []);
 
