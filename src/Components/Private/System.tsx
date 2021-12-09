@@ -315,7 +315,7 @@ export default function System() {
 								<BS.Button
 									variant="primary"
 									className="float-right"
-									onClick={() => history.push(`/profile/${user.id}`)}
+									onClick={() => history.push(!localStorage.getItem("betabot") ? `/profile/${user.id}` : `/profile/${user.id}?beta=true`)}
 								>
 									Profile
 								</BS.Button>
