@@ -1,8 +1,9 @@
 interface SystemPrivacy {
-    description_privacy?: string | boolean | null,
-    member_list_privacy?: string | boolean | null,
-    front_privacy?: string | boolean | null,
-    front_history_privacy?: string | boolean | null
+    description_privacy?: string,
+    member_list_privacy?: string,
+    front_privacy?: string,
+    front_history_privacy?: string,
+    group_list_privacy?: string
 }
 
 export default class Sys {
@@ -34,7 +35,8 @@ export default class Sys {
                 description_privacy: data.privacy.description_privacy,
                 member_list_privacy: data.privacy.member_list_privacy,
                 front_privacy: data.privacy.front_privacy,
-                front_history_privacy: data.privacy.front_history_privacy
+                front_history_privacy: data.privacy.front_history_privacy,
+                group_list_privacy: data.privacy.group_list_privacy
             }
         }
     }
