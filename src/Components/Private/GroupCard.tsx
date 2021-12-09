@@ -1,13 +1,50 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import * as BS from 'react-bootstrap';
 import { FaLink, FaLock } from 'react-icons/fa';
 import Popup from 'reactjs-popup';
 import defaultAvatar from '../../default_discord_avatar.png';
+import { toHTML } from "../../Functions/discord-parser.js";
 
-export default function GroupCard(props) {
-    const [ group, setGroup ] = useState(props.group);
+export default function GroupCard({g, edit}) {
+    const [ group, setGroup ] = useState({
+        id: "",
+        uuid: "",
+        name: null,
+        display_name: null,
+        description: "(no description)",
+        icon: null,
+        banner: null,
+        color: null,
+        privacy: {
+            description_privacy: "public",
+            icon_privacy: "public",
+            list_privacy: "public",
+            visibility: "public"
+        }
+    });
+
+    useEffect(() => {
+        setGroup({...group,
+            ...(g.id && {id: g.id}),
+            ...(g.uuid && {uuid: g.uuid}),
+            ...(g.name && {name: g.name}),
+            ...(g.display_name && {display_name: g.display_name}),
+            ...(g.description && {description: g.description}),
+            ...(g.icon && {icon: g.icon}),
+            ...(g.banner && {banner: g.banner}),
+            ...(g.color && {color: g.color}),
+            privacy: {
+                ...g.privacy.description_privacy && {description_privacy: g.privacy.description_privacy},
+                ...g.privacy.icon_privacy && {icon_privacy: g.privacy.icon_privacy},
+                ...g.privacy.list_privacy && {list_privacy: g.privacy.list_privacy},
+                ...g.privacy.visibility && {visibility: g.privacy.visibility}
+            }
+        });
+    });
+
+    
 
     function copyLink() {
         var link = `https://pk-webs.spectralitree.com/profile/g/${group.id}`

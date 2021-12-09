@@ -76,7 +76,7 @@ export default function GroupList({fetchGroups, groupsLoading, groupsError, grou
 
     const groupsList = slicedGroups.map((group) => <BS.Card key={group.id} className={localStorage.getItem("expandcards") ? "mb-3" : ""}>
 			<GroupCard
-			group={group} 
+			g={group} 
 			edit={groupEdit => setGroups(groups.map(group => group.id === groupEdit.id ? Object.assign(group, groupEdit) : group))}
 			/>
 			</BS.Card>
