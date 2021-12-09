@@ -24,7 +24,7 @@ const Navbar = ({ setIsSubmit, forceUpdate}) => {
         setIsSubmit(false);
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-        localStorage.removeItem("betabot")
+        localStorage.removeItem("betabot");
         history.push("/");
         forceUpdate();
       };
