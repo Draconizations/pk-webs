@@ -39,6 +39,7 @@ const Home = ({isInvalid, setIsInvalid, isLoading, setIsLoading, isSubmit, setIs
 		} catch (error) {
 			console.log(error);
 			localStorage.removeItem("token");
+			localStorage.removeItem("betabot");
 			setIsInvalid(true);
 			setErrorMessage(error.message);
 			setIsLoading(false);
